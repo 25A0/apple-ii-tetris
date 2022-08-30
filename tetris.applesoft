@@ -157,11 +157,13 @@ NEW
 1163     gosub 1600
 1164     if key = 136 then bx = bx - 1
 1165     if key = 149 then bx = bx + 1
-1167 next
-1168 gosub 1805: REM CLEAR
-1169 by = by + 1
-1170 if by = 20 then goto 1160
-1171 goto 1161
+1166     if key = 195 then block = bc(block)
+1167     if key = 216 then block = bx(block)
+1168 next
+1169 gosub 1805: REM CLEAR
+1170 by = by + 1
+1171 if by = 20 then goto 1160
+1172 goto 1161
 
 
 1499 end
