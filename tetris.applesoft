@@ -2,23 +2,142 @@ NEW
   10 REM TETRIS
   11 REM
   12 REM MAIN      1000
-  13 REM FUNCTIONS  800
-  14 REM VARIABLES  700
+  13 REM FUNCTIONS  600
+  14 REM VARIABLES  500
   15 REM SUBS      1500
+  16 REM DATA       700
 
- 700 REM VARIABLES
- 701
- 702 REM KEY     last pressed key
- 703 REM BLOCK   block shape
- 704 REM BX      block x position
- 705 REM BY      block y position
- 706 REM MASK    1 if drawing, 0 if clearing
+ 500 REM VARIABLES
+ 501
+ 502 REM KEY     last pressed key
+ 503 REM BLOCK   block shape
+ 504 REM BX      block x position
+ 505 REM BY      block y position
+ 506 REM MASK    1 if drawing, 0 if clearing
+ 507 REM BS      block shapes
+ 508 DIM BS(19,2,1): REM position of cubes per shape. block position is always
+ 509 REM covered. all shapes have three additional cubes, represented by two integers
+ 510 REM BC      mapping for clockwise rotation
+ 511 DIM BC(19)
+ 512 REM BX      mapping for counter-clockwise rotation
+ 513 DIM BX(19)
+ 514 REM CL      mapping from shape to colour
+ 515 DIM CL(19)
 
- 800 REM FUNCTIONS
- 801 REM compute grid x coordinate for column c
- 802 def fn gx(c) = 4 + c
- 803 REM compute grid y coordinate for row r
- 804 def fn gy(r) = 4 + r
+ 600 REM FUNCTIONS
+ 601 REM compute grid x coordinate for column c
+ 602 def fn gx(c) = 4 + c
+ 603 REM compute grid y coordinate for row r
+ 604 def fn gy(r) = 4 + r
+
+ 700 REM DATA
+ 701 REM mapping for clockwise rotation
+ 702 data 0, 8, 11, 3, 12, 15, 18, 19, 9, 10, 1, 2, 13, 14, 4, 16, 17, 5, 6, 7
+ 703 for i=0 to 19: read bc(i): next
+ 704 REM mapping for counter-clockwise rotation
+ 705 data 0, 10, 11, 3, 14, 17, 18, 19, 1, 8, 9, 2, 4, 12, 13, 5, 15, 16, 6, 7
+ 706 for i=0 to 19: read bx(i): next
+ 707 REM shapes
+ 708 A = 0 : B = 1 : C = 2 : X = 0 : Y = 1
+
+ 710 REM shape 1
+ 711 bs(1, A, X) =  0 : bs(1, A, Y) = -1
+ 712 bs(1, B, X) = -1 : bs(1, B, Y) =  0
+ 713 bs(1, C, X) =  1 : bs(1, C, Y) =  0
+
+ 720 REM shape 2
+ 721 bs(2, A, X) = -1 : bs(2, A, Y) =  0
+ 722 bs(2, B, X) =  1 : bs(2, B, Y) =  0
+ 723 bs(2, C, X) =  2 : bs(2, C, Y) =  0
+
+ 730 REM shape 3
+ 731 bs(3, A, X) =  1 : bs(3, A, Y) =  0
+ 732 bs(3, B, X) =  0 : bs(3, B, Y) =  1
+ 733 bs(3, C, X) =  1 : bs(3, C, Y) =  1
+
+ 740 REM shape 4
+ 741 bs(4, A, X) =  0 : bs(4, A, Y) = -1
+ 742 bs(4, B, X) = -1 : bs(4, B, Y) =  1
+ 743 bs(4, C, X) =  0 : bs(4, C, Y) =  1
+
+ 750 REM shape 5
+ 751 bs(5, A, X) =  0 : bs(5, A, Y) = -1
+ 752 bs(5, B, X) =  0 : bs(5, B, Y) =  1
+ 753 bs(5, C, X) =  1 : bs(5, C, Y) =  1
+
+ 760 REM shape 6
+ 761 bs(6, A, X) =  0 : bs(6, A, Y) = -1
+ 762 bs(6, B, X) =  1 : bs(6, B, Y) = -1
+ 763 bs(6, C, X) = -1 : bs(6, C, Y) =  0
+
+ 770 REM shape 7
+ 771 bs(7, A, X) = -1 : bs(7, A, Y) = -1
+ 772 bs(7, B, X) =  0 : bs(7, B, Y) = -1
+ 773 bs(7, C, X) =  1 : bs(7, C, Y) =  0
+
+ 780 REM shape 8
+ 781 bs(8, A, X) =  1 : bs(8, A, Y) =  0
+ 782 bs(8, B, X) =  0 : bs(8, B, Y) =  1
+ 783 bs(8, C, X) =  1 : bs(8, C, Y) =  1
+
+ 790 REM shape 9
+ 791 bs(9, A, X) =  1 : bs(9, A, Y) =  0
+ 792 bs(9, B, X) =  0 : bs(9, B, Y) =  1
+ 793 bs(9, C, X) =  1 : bs(9, C, Y) =  1
+
+ 800 REM shape 10
+ 801 bs(10, A, X) =  0 : bs(10, A, Y) = -1
+ 802 bs(10, B, X) = -1 : bs(10, B, Y) =  0
+ 803 bs(10, C, X) =  0 : bs(10, C, Y) =  1
+
+ 810 REM shape 11
+ 811 bs(10, A, X) =  0 : bs(10, A, Y) = -1
+ 812 bs(10, B, X) =  0 : bs(10, B, Y) =  1
+ 813 bs(10, C, X) =  0 : bs(10, C, Y) =  2
+
+ 820 REM shape 12
+ 821 bs(10, A, X) = -1 : bs(10, A, Y) = -1
+ 822 bs(10, B, X) = -1 : bs(10, B, Y) =  0
+ 823 bs(10, C, X) =  1 : bs(10, C, Y) =  0
+
+ 830 REM shape 13
+ 831 bs(10, A, X) =  0 : bs(10, A, Y) = -1
+ 832 bs(10, B, X) =  1 : bs(10, B, Y) = -1
+ 833 bs(10, C, X) =  0 : bs(10, C, Y) =  1
+
+ 840 REM shape 14
+ 841 bs(10, A, X) = -1 : bs(10, A, Y) =  0
+ 842 bs(10, B, X) =  1 : bs(10, B, Y) =  0
+ 843 bs(10, C, X) =  1 : bs(10, C, Y) =  1
+
+ 850 REM shape 15
+ 851 bs(10, A, X) = -1 : bs(10, A, Y) =  0
+ 852 bs(10, B, X) =  1 : bs(10, B, Y) =  0
+ 853 bs(10, C, X) = -1 : bs(10, C, Y) =  1
+
+ 860 REM shape 16
+ 861 bs(10, A, X) = -1 : bs(10, A, Y) = -1
+ 862 bs(10, B, X) =  0 : bs(10, B, Y) = -1
+ 863 bs(10, C, X) =  0 : bs(10, C, Y) =  1
+
+ 870 REM shape 17
+ 871 bs(10, A, X) =  1 : bs(10, A, Y) = -1
+ 872 bs(10, B, X) = -1 : bs(10, B, Y) =  0
+ 873 bs(10, C, X) =  1 : bs(10, C, Y) =  0
+
+ 880 REM shape 18
+ 881 bs(10, A, X) =  0 : bs(10, A, Y) = -1
+ 882 bs(10, B, X) =  1 : bs(10, B, Y) =  0
+ 883 bs(10, C, X) =  1 : bs(10, C, Y) =  1
+
+ 890 REM shape 19
+ 891 bs(10, A, X) =  0 : bs(10, A, Y) = -1
+ 892 bs(10, B, X) = -1 : bs(10, B, Y) =  0
+ 893 bs(10, C, X) = -1 : bs(10, C, Y) =  1
+
+ 900 REM mapping from shape to colour
+ 901 data 0, 1, 9, 3, 4, 12, 2, 14, 1, 1, 1, 9, 4, 4, 4, 12, 12, 12, 2, 14
+ 902 for i=0 to 19: read cl(i): next
 
 1000 REM MAIN
 1001 gr
@@ -34,12 +153,15 @@ NEW
 1150 REM main loop
 1160 gosub 1700: REM NEXTBLOCK
 1161 gosub 1800: REM DRAW
-1162 for dt = 1 to 100
-1163 next
-1164 gosub 1805: REM CLEAR
-1165 by = by + 1
-1166 if by = 20 then goto 1160
-1167 goto 1161
+1162 for dt = 1 to 1
+1163     gosub 1600
+1164     if key = 136 then bx = bx - 1
+1165     if key = 149 then bx = bx + 1
+1167 next
+1168 gosub 1805: REM CLEAR
+1169 by = by + 1
+1170 if by = 20 then goto 1160
+1171 goto 1161
 
 
 1499 end
@@ -49,6 +171,7 @@ NEW
 1502 REM WAITKEY        1610
 1503 REM NEXTBLOCK      1700
 1504 REM DRAW           1800
+1505 REM CLEAR          1805
 
 1600 REM GETKEY
 1601 key=peek(49152)
@@ -65,18 +188,19 @@ NEW
 1702 block = int(rnd(4) * 7 + 1)
 1703 bx = 4
 1704 by = 1
-1705 return
+1705 print "Block: "; block
+1706 return
 
 1800 REM DRAW
-1801 mask = 1
+1801 mask = 1: gosub 2000
 1802 REM Each shape has its own subroutine
-1803 on block gosub 1810, 1820, 1830, 1840, 1850, 1860, 1870
+1803 REM on block gosub 1810, 1820, 1830, 1840, 1850, 1860, 1870
 1804 return
 
 1805 REM CLEAR
-1806 mask = 0
+1806 mask = 0: gosub 2000
 1807 REM Each shape has its own subroutine
-1808 on block gosub 1810, 1820, 1830, 1840, 1850, 1860, 1870
+1808 REM on block gosub 1810, 1820, 1830, 1840, 1850, 1860, 1870
 1809 return
 
 1810 REM T shape
@@ -125,3 +249,11 @@ NEW
 1872 plot fn gx(bx), fn gy(by): plot fn gx(bx + 1), fn gy(by)
 1873 plot fn gx(bx + 1), fn gy(by + 1): plot fn gx(bx + 2), fn gy(by + 1)
 1874 return
+
+2000 REM DRAW SHAPE
+2001 color = cl(block) * mask
+2002 plot fn gx(bx), fn gy(by)
+2003 plot fn gx(bx + bs(block, 0, 0)), fn gy(by + bs(block, 0, 1))
+2004 plot fn gx(bx + bs(block, 1, 0)), fn gy(by + bs(block, 1, 1))
+2005 plot fn gx(bx + bs(block, 2, 0)), fn gy(by + bs(block, 2, 1))
+2006 return
