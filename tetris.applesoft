@@ -1,0 +1,126 @@
+NEW
+  10 REM TETRIS
+  11 REM
+  12 REM MAIN      1000
+  13 REM FUNCTIONS  800
+  14 REM VARIABLES  700
+  15 REM SUBS      1500
+
+ 700 REM VARIABLES
+ 701
+ 702 REM KEY     last pressed key
+ 703 REM BLOCK   block shape
+ 704 REM BX      block x position
+ 705 REM BY      block y position
+ 706 REM MASK    1 if drawing, 0 if clearing
+
+ 800 REM FUNCTIONS
+ 801 REM compute grid x coordinate for column c
+ 802 def fn gx(c) = 4 + c
+ 803 REM compute grid y coordinate for row r
+ 804 def fn gy(r) = 4 + r
+
+1000 REM MAIN
+1001 gr
+
+
+1100 REM DRAW FRAME
+1101 color = 5
+1102 hlin fn gx(0), fn gx(11) at fn gy(0)
+1103 hlin fn gx(0), fn gx(11) at fn gy(21)
+1104 vlin fn gy(0), fn gy(21) at fn gx(0)
+1105 vlin fn gy(0), fn gy(21) at fn gx(11)
+
+1150 REM main loop
+1160 gosub 1700: REM NEXTBLOCK
+1161 gosub 1800: REM DRAW
+1162 for dt = 1 to 100
+1163 next
+1164 gosub 1805: REM CLEAR
+1165 by = by + 1
+1166 goto 1160
+
+
+1499 end
+
+1500 REM SUBS
+1501 REM GETKEY         1600
+1502 REM WAITKEY        1610
+1503 REM NEXTBLOCK      1700
+1504 REM DRAW           1800
+
+1600 REM GETKEY
+1601 key=peek(49152)
+1602 poke 49168, 0
+1603 return
+
+1610 REM WAITKEY
+1611 key=peek(49152): if key<128 then 1611
+1612 poke 49168, 0
+1613 return
+
+1700 REM NEXTBLOCK
+1701 REM picks the next block at random
+1702 block = int(rnd(4) * 7)
+1703 bx = 4
+1704 by = 1
+1705 return
+
+1800 REM DRAW
+1801 mask = 1
+1802 REM Each shape has its own subroutine
+1803 on block gosub 1810, 1820, 1830, 1840, 1850, 1860, 1870
+1804 return
+
+1805 REM CLEAR
+1806 mask = 0
+1807 REM Each shape has its own subroutine
+1808 on block gosub 1810, 1820, 1830, 1840, 1850, 1860, 1870
+1809 return
+
+1810 REM T shape
+1811 color = 1 * mask
+1812 plot fn gx(bx), fn gy(by)
+1813 plot fn gx(bx), fn gy(by + 1): plot fn gx(bx + 1), fn gy(by + 1)
+1814 plot fn gx(bx), fn gy(by + 2)
+1815 return
+
+1820 REM I shape
+1821 color = 9 * mask
+1822 plot fn gx(bx), fn gy(by)
+1823 plot fn gx(bx), fn gy(by + 1)
+1824 plot fn gx(bx), fn gy(by + 2)
+1825 plot fn gx(bx), fn gy(by + 3)
+1826 return
+
+1830 REM box shape
+1831 color = 3 * mask
+1832 plot fn gx(bx), fn gy(by): plot fn gx(bx + 1), fn gy(by)
+1833 plot fn gx(bx), fn gy(by + 1): plot fn gx(bx + 1), fn gy(by + 1)
+1835 return
+
+1840 REM p shape
+1841 color = 4 * mask
+1842 plot fn gx(bx), fn gy(by): plot fn gx(bx + 1), fn gy(by)
+1843 plot fn gx(bx), fn gy(by + 1)
+1844 plot fn gx(bx), fn gy(by + 2)
+1845 return
+
+1850 REM q shape
+1851 color = 12 * mask
+1852 plot fn gx(bx), fn gy(by): plot fn gx(bx + 1), fn gy(by)
+1853 plot fn gx(bx + 1), fn gy(by + 1)
+1854 plot fn gx(bx + 1), fn gy(by + 2)
+1855 return
+
+1860 REM s shape
+1861 color = 2 * mask
+1862 plot fn gx(bx + 1), fn gy(by): plot fn gx(bx + 2), fn gy(by)
+1863 plot fn gx(bx), fn gy(by + 1): plot fn gx(bx + 1), fn gy(by + 1)
+1864 return
+
+1870 REM z shape
+1871 color = 14 * mask
+1872 plot fn gx(bx), fn gy(by): plot fn gx(bx + 1), fn gy(by)
+1873 plot fn gx(bx + 1), fn gy(by + 1): plot fn gx(bx + 2), fn gy(by + 1)
+1874 return
