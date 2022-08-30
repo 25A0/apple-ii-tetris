@@ -76,14 +76,14 @@ NEW
  773 bs(7, C, X) =  1 : bs(7, C, Y) =  0
 
  780 REM shape 8
- 781 bs(8, A, X) =  1 : bs(8, A, Y) =  0
- 782 bs(8, B, X) =  0 : bs(8, B, Y) =  1
- 783 bs(8, C, X) =  1 : bs(8, C, Y) =  1
+ 781 bs(8, A, X) =  0 : bs(8, A, Y) = -1
+ 782 bs(8, B, X) =  1 : bs(8, B, Y) =  0
+ 783 bs(8, C, X) =  0 : bs(8, C, Y) =  1
 
  790 REM shape 9
- 791 bs(9, A, X) =  1 : bs(9, A, Y) =  0
- 792 bs(9, B, X) =  0 : bs(9, B, Y) =  1
- 793 bs(9, C, X) =  1 : bs(9, C, Y) =  1
+ 791 bs(9, A, X) = -1 : bs(9, A, Y) =  0
+ 792 bs(9, B, X) =  1 : bs(9, B, Y) =  0
+ 793 bs(9, C, X) =  0 : bs(9, C, Y) =  1
 
  800 REM shape 10
  801 bs(10, A, X) =  0 : bs(10, A, Y) = -1
