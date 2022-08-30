@@ -38,7 +38,8 @@ NEW
 1163 next
 1164 gosub 1805: REM CLEAR
 1165 by = by + 1
-1166 goto 1160
+1166 if by = 20 then goto 1160
+1167 goto 1161
 
 
 1499 end
