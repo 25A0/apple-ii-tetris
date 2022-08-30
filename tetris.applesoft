@@ -62,7 +62,7 @@ NEW
 
 1700 REM NEXTBLOCK
 1701 REM picks the next block at random
-1702 block = int(rnd(4) * 7)
+1702 block = int(rnd(4) * 7 + 1)
 1703 bx = 4
 1704 by = 1
 1705 return
