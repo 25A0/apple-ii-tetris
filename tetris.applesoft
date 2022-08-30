@@ -194,68 +194,15 @@ NEW
 1706 return
 
 1800 REM DRAW
-1801 mask = 1: gosub 2000
-1802 REM Each shape has its own subroutine
-1803 REM on block gosub 1810, 1820, 1830, 1840, 1850, 1860, 1870
-1804 return
+1801 mask = 1: goto 1810
 
 1805 REM CLEAR
-1806 mask = 0: gosub 2000
-1807 REM Each shape has its own subroutine
-1808 REM on block gosub 1810, 1820, 1830, 1840, 1850, 1860, 1870
-1809 return
+1806 mask = 0: goto 1810
 
-1810 REM T shape
-1811 color = 1 * mask
+1810 REM DRAW SHAPE
+1811 color = cl(block) * mask
 1812 plot fn gx(bx), fn gy(by)
-1813 plot fn gx(bx), fn gy(by + 1): plot fn gx(bx + 1), fn gy(by + 1)
-1814 plot fn gx(bx), fn gy(by + 2)
-1815 return
-
-1820 REM I shape
-1821 color = 9 * mask
-1822 plot fn gx(bx), fn gy(by)
-1823 plot fn gx(bx), fn gy(by + 1)
-1824 plot fn gx(bx), fn gy(by + 2)
-1825 plot fn gx(bx), fn gy(by + 3)
-1826 return
-
-1830 REM box shape
-1831 color = 3 * mask
-1832 plot fn gx(bx), fn gy(by): plot fn gx(bx + 1), fn gy(by)
-1833 plot fn gx(bx), fn gy(by + 1): plot fn gx(bx + 1), fn gy(by + 1)
-1835 return
-
-1840 REM p shape
-1841 color = 4 * mask
-1842 plot fn gx(bx), fn gy(by): plot fn gx(bx + 1), fn gy(by)
-1843 plot fn gx(bx), fn gy(by + 1)
-1844 plot fn gx(bx), fn gy(by + 2)
-1845 return
-
-1850 REM q shape
-1851 color = 12 * mask
-1852 plot fn gx(bx), fn gy(by): plot fn gx(bx + 1), fn gy(by)
-1853 plot fn gx(bx + 1), fn gy(by + 1)
-1854 plot fn gx(bx + 1), fn gy(by + 2)
-1855 return
-
-1860 REM s shape
-1861 color = 2 * mask
-1862 plot fn gx(bx + 1), fn gy(by): plot fn gx(bx + 2), fn gy(by)
-1863 plot fn gx(bx), fn gy(by + 1): plot fn gx(bx + 1), fn gy(by + 1)
-1864 return
-
-1870 REM z shape
-1871 color = 14 * mask
-1872 plot fn gx(bx), fn gy(by): plot fn gx(bx + 1), fn gy(by)
-1873 plot fn gx(bx + 1), fn gy(by + 1): plot fn gx(bx + 2), fn gy(by + 1)
-1874 return
-
-2000 REM DRAW SHAPE
-2001 color = cl(block) * mask
-2002 plot fn gx(bx), fn gy(by)
-2003 plot fn gx(bx + bs(block, 0, 0)), fn gy(by + bs(block, 0, 1))
-2004 plot fn gx(bx + bs(block, 1, 0)), fn gy(by + bs(block, 1, 1))
-2005 plot fn gx(bx + bs(block, 2, 0)), fn gy(by + bs(block, 2, 1))
-2006 return
+1813 plot fn gx(bx + bs(block, 0, 0)), fn gy(by + bs(block, 0, 1))
+1814 plot fn gx(bx + bs(block, 1, 0)), fn gy(by + bs(block, 1, 1))
+1815 plot fn gx(bx + bs(block, 2, 0)), fn gy(by + bs(block, 2, 1))
+1816 return
