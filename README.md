@@ -2,7 +2,7 @@
 
 ![screenshot](https://user-images.githubusercontent.com/6221922/187790615-2e9f1588-478b-41ea-aa1a-086f9fc5fd0f.png)
 
-A simple Tetris clone for Apple II, inspired by @shiffman's [video](https://www.youtube.com/watch?v=7r83N3c2kPw) on coding Snake on an Apple II.
+A simple Tetris clone for Apple II, inspired by Daniel Shiffman's [video](https://www.youtube.com/watch?v=7r83N3c2kPw) on coding Snake on an Apple II.
 
 ## How to play
 
