@@ -173,13 +173,16 @@ NEW
 
 
 1100 REM DRAW FRAME
-1101 color = 5
+1101 color = 14
 1102 hlin fn gx(0), fn gx(11) at fn gy(0)
 1103 hlin fn gx(0), fn gx(11) at fn gy(21)
 1104 vlin fn gy(0), fn gy(21) at fn gx(0)
 1105 vlin fn gy(0), fn gy(21) at fn gx(11)
 
+
 1150 REM main loop
+1151 htab 2: vtab 24: print "MOVE: < >  ROTATE: C X"
+1152 htab 20: vtab 21: print "NEXT"
 1160 gosub 1700: REM NEXTBLOCK
 1161 REM check for collision. game over if block collides after spawning
 1162 gosub 1900
