@@ -261,25 +261,27 @@ NEW
 2009 fill(by + bs(block, 1, 1)) = fill(by + bs(block, 1, 1)) + 1
 2010 fill(by + bs(block, 2, 1)) = fill(by + bs(block, 2, 1)) + 1
 2011 for y=2 to 20
-2012     if fill(y) < 10 then goto 2029
+2012     if fill(y) < 10 then goto 2031
 2013     REM row is full
 2014     REM shift higher rows down
 2015     for y1=y to 2 step -1
-2016         REM this will read from row 0 for the top grid row,
-2017         REM which is always 0
-2018         fill(y1) = fill(y1 - 1)
-2019         REM copy grid and occ grid
-2020         for x=1 to 10
-2021             color = scrn(fn gx(x), fn gy(y1 - 1))
-2022             plot fn gx(x), fn gy(y1)
-2023             REM copy occ grid. note that the top row has to be clear
-2024             REM for this to work, otherwise we would always shift
-2025             REM in a full row from the top.
-2026             occ(x, y1) = occ(x, y1 - 1)
-2027         next
-2028     next
-2029 next
-2030 return
+2016         REM finish the loop when theres nothing more to clear
+2017         if fill(y1) = 0 then goto 2031
+2018         REM this will read from row 0 for the top grid row,
+2019         REM which is always 0
+2020         fill(y1) = fill(y1 - 1)
+2021         REM copy grid and occ grid
+2022         for x=1 to 10
+2023             color = scrn(fn gx(x), fn gy(y1 - 1))
+2024             plot fn gx(x), fn gy(y1)
+2025             REM copy occ grid. note that the top row has to be clear
+2026             REM for this to work, otherwise we would always shift
+2027             REM in a full row from the top.
+2028             occ(x, y1) = occ(x, y1 - 1)
+2029         next
+2030     next
+2031 next
+2032 return
 
 2100 REM MOVE LEFT
 2101 REM move block to the left
