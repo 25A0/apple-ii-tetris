@@ -167,7 +167,8 @@ NEW
  925 pnts(4) = 1200
 
 1000 REM MAIN
-1001 gr
+1001 home
+1002 gr
 
 
 1100 REM DRAW FRAME
@@ -179,7 +180,10 @@ NEW
 
 1150 REM main loop
 1160 gosub 1700: REM NEXTBLOCK
-1161 HTAB 12: print "SCORE ";scr
+1161 REM check for collision. game over if block collides after spawning
+1162 gosub 1900
+1163 if col > 0 then goto 1400
+1164 HTAB 12: vtab 22: print "SCORE ";scr
 1170 gosub 1800: REM DRAW
 1171 for dt = 1 to 1
 1172     gosub 1600
@@ -201,7 +205,11 @@ NEW
 1188 REM pick the next block
 1189 goto 1160
 
-
+1400 REM GAME OVER
+1401 home
+1402 htab 12: vtab 22: print "GAME OVER"
+1403 htab  8: vtab 23: print "FINAL SCORE: ";scr
+1404 gosub 1610
 1499 end
 
 1500 REM SUBS
