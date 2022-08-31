@@ -30,6 +30,9 @@ NEW
  520 DIM OCC(11,21)
  521 REM FILL    number of filled cells per row
  522 DIM FILL(20)
+ 523 REM SCR   score
+ 524 REM PNTS  mapping from number of rows cleared to points awarded
+ 525 DIM PNTS(4)
 
  600 REM FUNCTIONS
  601 REM compute grid x coordinate for column c
@@ -156,6 +159,13 @@ NEW
  917     occ(11, y) = 1
  918 next y
 
+ 920 REM points for number of rows cleared
+ 921 pnts(0) = 0
+ 922 pnts(1) = 40
+ 923 pnts(2) = 100
+ 924 pnts(3) = 300
+ 925 pnts(4) = 1200
+
 1000 REM MAIN
 1001 gr
 
@@ -169,26 +179,27 @@ NEW
 
 1150 REM main loop
 1160 gosub 1700: REM NEXTBLOCK
-1161 gosub 1800: REM DRAW
-1162 for dt = 1 to 1
-1163     gosub 1600: print "key: ";key
-1164     if key = 136 then gosub 2100
-1165     if key = 149 then gosub 2120
-1166     if key = 195 then gosub 2140
-1167     if key = 216 then gosub 2160
-1168 next
-1169 gosub 1805: REM CLEAR
-1170 by = by + 1
-1171 gosub 1900: REM CHECK COLLISION
-1172 if col = 0 then goto 1161: REM no collision, continue with next loop
-1173 REM else: revert downwards movement
-1174 by = by - 1
-1175 REM redraw the block in the old position
-1176 gosub 1800
-1177 REM place the block
-1178 gosub 2000
-1179 REM pick the next block
-1180 goto 1160
+1161 HTAB 12: print "SCORE ";scr
+1170 gosub 1800: REM DRAW
+1171 for dt = 1 to 1
+1172     gosub 1600
+1173     if key = 136 then gosub 2100
+1174     if key = 149 then gosub 2120
+1175     if key = 195 then gosub 2140
+1176     if key = 216 then gosub 2160
+1177 next
+1178 gosub 1805: REM CLEAR
+1179 by = by + 1
+1180 gosub 1900: REM CHECK COLLISION
+1181 if col = 0 then goto 1170: REM no collision, continue with next loop
+1182 REM else: revert downwards movement
+1183 by = by - 1
+1184 REM redraw the block in the old position
+1185 gosub 1800
+1186 REM place the block
+1187 gosub 2000
+1188 REM pick the next block
+1189 goto 1160
 
 
 1499 end
@@ -221,8 +232,7 @@ NEW
 1702 block = int(rnd(4) * 7 + 1)
 1703 bx = 4
 1704 by = 2
-1705 print "Block: "; block
-1706 return
+1705 return
 
 1800 REM DRAW
 1801 mask = 1: goto 1810
@@ -246,7 +256,7 @@ NEW
 1905 col = col + occ(bx + bs(block, 0, 0), by + bs(block, 0, 1))
 1906 col = col + occ(bx + bs(block, 1, 0), by + bs(block, 1, 1))
 1907 col = col + occ(bx + bs(block, 2, 0), by + bs(block, 2, 1))
-1908 print "col: "; col
+1908
 1909 return
 
 2000 REM PLACE BLOCK
@@ -260,28 +270,32 @@ NEW
 2008 fill(by + bs(block, 0, 1)) = fill(by + bs(block, 0, 1)) + 1
 2009 fill(by + bs(block, 1, 1)) = fill(by + bs(block, 1, 1)) + 1
 2010 fill(by + bs(block, 2, 1)) = fill(by + bs(block, 2, 1)) + 1
-2011 for y=2 to 20
-2012     if fill(y) < 10 then goto 2031
-2013     REM row is full
-2014     REM shift higher rows down
-2015     for y1=y to 2 step -1
-2016         REM finish the loop when theres nothing more to clear
-2017         if fill(y1) = 0 then goto 2031
-2018         REM this will read from row 0 for the top grid row,
-2019         REM which is always 0
-2020         fill(y1) = fill(y1 - 1)
-2021         REM copy grid and occ grid
-2022         for x=1 to 10
-2023             color = scrn(fn gx(x), fn gy(y1 - 1))
-2024             plot fn gx(x), fn gy(y1)
-2025             REM copy occ grid. note that the top row has to be clear
-2026             REM for this to work, otherwise we would always shift
-2027             REM in a full row from the top.
-2028             occ(x, y1) = occ(x, y1 - 1)
-2029         next
-2030     next
-2031 next
-2032 return
+2011 REM count the number of cleared rows
+2012 nrows = 0
+2013 for y=2 to 20
+2014     if fill(y) < 10 then goto 2034
+2015     REM row is full
+2016     nrows = nrows + 1
+2017     REM shift higher rows down
+2018     for y1=y to 2 step -1
+2019         REM finish the loop when theres nothing more to clear
+2020         if fill(y1) = 0 then goto 2034
+2021         REM this will read from row 0 for the top grid row,
+2022         REM which is always 0
+2023         fill(y1) = fill(y1 - 1)
+2024         REM copy grid and occ grid
+2025         for x=1 to 10
+2026             color = scrn(fn gx(x), fn gy(y1 - 1))
+2027             plot fn gx(x), fn gy(y1)
+2028             REM copy occ grid. note that the top row has to be clear
+2029             REM for this to work, otherwise we would always shift
+2030             REM in a full row from the top.
+2031             occ(x, y1) = occ(x, y1 - 1)
+2032         next
+2033     next
+2034 next
+2035 scr = scr + pnts(nrows)
+2036 return
 
 2100 REM MOVE LEFT
 2101 REM move block to the left
