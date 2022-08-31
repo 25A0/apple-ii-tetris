@@ -28,6 +28,8 @@ NEW
  518 REM         this grid has an extra row and column for the edges,
  519 REM         which are initialized to 1
  520 DIM OCC(11,21)
+ 521 REM FILL    number of filled cells per row
+ 522 DIM FILL(20)
 
  600 REM FUNCTIONS
  601 REM compute grid x coordinate for column c
@@ -144,9 +146,9 @@ NEW
  901 data 0, 1, 9, 3, 4, 12, 2, 14, 1, 1, 1, 9, 4, 4, 4, 12, 12, 12, 2, 14
  902 for i=0 to 19: read cl(i): next
 
- 910 REM Prime occ grid by setting the edges to 1
+ 910 REM Prime occ grid by setting the edges to 1, except for the top
  911 for x=0 to 11:
- 912     occ(x,  0) = 1
+ 912     REM top is open, also because of how we handle clearing rows
  913     occ(x, 21) = 1
  914 next x
  915 for y=0 to 21:
@@ -253,7 +255,31 @@ NEW
 2003 occ(bx + bs(block, 0, 0), by + bs(block, 0, 1)) = 1
 2004 occ(bx + bs(block, 1, 0), by + bs(block, 1, 1)) = 1
 2005 occ(bx + bs(block, 2, 0), by + bs(block, 2, 1)) = 1
-2006 return
+2006 REM update the fill score for those rows
+2007 fill(by) = fill(by) + 1
+2008 fill(by + bs(block, 0, 1)) = fill(by + bs(block, 0, 1)) + 1
+2009 fill(by + bs(block, 1, 1)) = fill(by + bs(block, 1, 1)) + 1
+2010 fill(by + bs(block, 2, 1)) = fill(by + bs(block, 2, 1)) + 1
+2011 for y=2 to 20
+2012     if fill(y) < 10 then goto 2029
+2013     REM row is full
+2014     REM shift higher rows down
+2015     for y1=y to 2 step -1
+2016         REM this will read from row 0 for the top grid row,
+2017         REM which is always 0
+2018         fill(y1) = fill(y1 - 1)
+2019         REM copy grid and occ grid
+2020         for x=1 to 10
+2021             color = scrn(fn gx(x), fn gy(y1 - 1))
+2022             plot fn gx(x), fn gy(y1)
+2023             REM copy occ grid. note that the top row has to be clear
+2024             REM for this to work, otherwise we would always shift
+2025             REM in a full row from the top.
+2026             occ(x, y1) = occ(x, y1 - 1)
+2027         next
+2028     next
+2029 next
+2030 return
 
 2100 REM MOVE LEFT
 2101 REM move block to the left
@@ -322,4 +348,3 @@ NEW
 2173 REM and redraw
 2174 gosub 1800
 2175 return
-
