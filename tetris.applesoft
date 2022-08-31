@@ -23,6 +23,11 @@ NEW
  513 DIM BX(19)
  514 REM CL      mapping from shape to colour
  515 DIM CL(19)
+ 516 REM COL     result of the last collision check. 1 for collision, 0 for free
+ 517 REM OCC     grid keeping track of occupied cells.
+ 518 REM         this grid has an extra row and column for the edges,
+ 519 REM         which are initialized to 1
+ 520 DIM OCC(11,21)
 
  600 REM FUNCTIONS
  601 REM compute grid x coordinate for column c
@@ -139,6 +144,16 @@ NEW
  901 data 0, 1, 9, 3, 4, 12, 2, 14, 1, 1, 1, 9, 4, 4, 4, 12, 12, 12, 2, 14
  902 for i=0 to 19: read cl(i): next
 
+ 910 REM Prime occ grid by setting the edges to 1
+ 911 for x=0 to 11:
+ 912     occ(x,  0) = 1
+ 913     occ(x, 21) = 1
+ 914 next x
+ 915 for y=0 to 21:
+ 916     occ( 0, y) = 1
+ 917     occ(11, y) = 1
+ 918 next y
+
 1000 REM MAIN
 1001 gr
 
@@ -154,17 +169,18 @@ NEW
 1160 gosub 1700: REM NEXTBLOCK
 1161 gosub 1800: REM DRAW
 1162 for dt = 1 to 1
-1163     gosub 1600
-1164     if key = 136 then bx = bx - 1
-1165     if key = 149 then bx = bx + 1
-1166     if key = 195 then block = bc(block)
-1167     if key = 216 then block = bx(block)
+1163     gosub 1600: print "key: ";key
+1164     if key = 136 then print "LEFT": gosub 2100
+1165     if key = 149 then print "RIGHT": gosub 2120
+1166     if key = 195 then print "CW": gosub 2140
+1167     if key = 216 then print "CCW": gosub 2160
 1168 next
 1169 gosub 1805: REM CLEAR
 1170 by = by + 1
-1171 if by = 20 then goto 1160
-1172 goto 1161
-
+1171 gosub 1900: REM CHECK COLLISION
+1172 if col > 0 then by = by - 1: gosub 1800: gosub 2000: goto 1160
+1173 if by = 20 then stop: REM this shouldn't happen
+1174 goto 1161
 
 1499 end
 
@@ -174,6 +190,12 @@ NEW
 1503 REM NEXTBLOCK      1700
 1504 REM DRAW           1800
 1505 REM CLEAR          1805
+1506 REM COLLISION      1900
+1507 REM PLACE BLOCK    2000
+1508 REM MOVE LEFT      2100
+1509 REM MOVE RIGHT     2120
+1510 REM ROT CW         2140
+1511 REM ROT CCW        2160
 
 1600 REM GETKEY
 1601 key=peek(49152)
@@ -189,7 +211,7 @@ NEW
 1701 REM picks the next block at random
 1702 block = int(rnd(4) * 7 + 1)
 1703 bx = 4
-1704 by = 1
+1704 by = 2
 1705 print "Block: "; block
 1706 return
 
@@ -206,3 +228,91 @@ NEW
 1814 plot fn gx(bx + bs(block, 1, 0)), fn gy(by + bs(block, 1, 1))
 1815 plot fn gx(bx + bs(block, 2, 0)), fn gy(by + bs(block, 2, 1))
 1816 return
+
+1900 REM COLLISION CHECK
+1901 REM for the collision check, we go through all cubes of the shape
+1902 REM and check if any of them overlap with a cube in the current grid
+1903 col = 0
+1904 col = col + occ(bx, by)
+1905 col = col + occ(bx + bs(block, 0, 0), by + bs(block, 0, 1))
+1906 col = col + occ(bx + bs(block, 1, 0), by + bs(block, 1, 1))
+1907 col = col + occ(bx + bs(block, 2, 0), by + bs(block, 2, 1))
+1908 print "col: "; col
+1909 return
+
+2000 REM PLACE BLOCK
+2001 REM Update shape in occ grid
+2002 occ(bx, by) = 1
+2003 occ(bx + bs(block, 0, 0), by + bs(block, 0, 1)) = 1
+2004 occ(bx + bs(block, 1, 0), by + bs(block, 1, 1)) = 1
+2005 occ(bx + bs(block, 2, 0), by + bs(block, 2, 1)) = 1
+2006 return
+
+2100 REM MOVE LEFT
+2101 REM move block to the left
+2102 bx = bx - 1
+2103 REM check collision
+2104 gosub 1900
+2105 REM revert to old block position
+2106 bx = bx + 1
+2107 REM if collision: return
+2108 if col > 0 then return
+2109 REM else: clear old current shape
+2110 gosub 1805
+2111 REM then update block position
+2112 bx = bx - 1
+2113 REM and redraw
+2114 gosub 1800
+2115 return
+
+2120 REM MOVE RIGHT
+2121 REM move block to the right
+2122 bx = bx + 1
+2123 REM check collision
+2124 gosub 1900
+2125 REM revert to old block position
+2126 bx = bx - 1
+2127 REM if collision: return
+2128 if col > 0 then return
+2129 REM else: clear old current shape
+2130 gosub 1805
+2131 REM then update block position
+2132 bx = bx + 1
+2133 REM and redraw
+2134 gosub 1800
+2135 return
+
+2140 REM ROTATE CLOCKWISE
+2141 REM update shape
+2142 block = bc(block)
+2143 REM check collision
+2144 gosub 1900
+2145 REM revert to old block
+2146 block = bx(block)
+2147 REM if collision: return
+2148 if col > 0 then return
+2149 REM else: clear old current shape
+2150 gosub 1805
+2151 REM then update block
+2152 block = bc(block)
+2153 REM and redraw
+2154 gosub 1800
+2155 return
+
+2160 REM ROTATE COUNTERCLOCKWISE
+2161 REM update shape
+2162 block = bx(block)
+2163 REM check collision
+2164 gosub 1900
+2165 REM revert to old block
+2166 block = bc(block)
+2167 REM if collision: return
+2168 if col > 0 then return
+2169 REM else: clear old current shape
+2170 gosub 1805
+2171 REM then update block
+2172 block = bx(block)
+2173 REM and redraw
+2174 gosub 1800
+2175 return
+
