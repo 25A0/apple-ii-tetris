@@ -33,6 +33,7 @@ NEW
  523 REM SCR   score
  524 REM PNTS  mapping from number of rows cleared to points awarded
  525 DIM PNTS(4)
+ 526 REM NBLOCK  shape of the next block
 
  600 REM FUNCTIONS
  601 REM compute grid x coordinate for column c
@@ -236,11 +237,29 @@ NEW
 1613 return
 
 1700 REM NEXTBLOCK
-1701 REM picks the next block at random
-1702 block = int(rnd(4) * 7 + 1)
-1703 bx = 4
-1704 by = 2
-1705 return
+1701 REM picks the next block at random and update the preview
+1702 REM the very first time this function is called, no nblock is defined yet.
+1703 if nblock = 0 then nblock = int(rnd(4) * 7 + 1)
+1704 REM the preview is drawn at:
+1705 bx = 16: by = 22
+1706 REM set the current block to the next block
+1707 block = nblock
+1708 REM remove the preview of the next block
+1709 gosub 1805
+1710 REM pick the next block
+1711 nblock = int(rnd(4) * 7 + 1)
+1712 REM draw a preview of the next block
+1713 REM for this we temporarily set block to the next block,
+1714 REM storing the actual block in a temporary variable.
+1715 tmp = block
+1716 block = nblock
+1717 gosub 1800
+1718 REM set the block back to the actual block
+1719 block = tmp
+1720 REM set the block position to the start position
+1721 bx = 4
+1722 by = 2
+1723 return
 
 1800 REM DRAW
 1801 mask = 1: goto 1810
