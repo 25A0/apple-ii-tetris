@@ -39,7 +39,7 @@ NEW
  601 REM compute grid x coordinate for column c
  602 def fn gx(c) = 14 + c
  603 REM compute grid y coordinate for row r
- 604 def fn gy(r) = 10 + r
+ 604 def fn gy(r) = 12 + r
 
  700 REM DATA
  701 REM mapping for clockwise rotation
@@ -188,13 +188,13 @@ NEW
 
 
 1150 REM main loop
-1151 htab 2: vtab 24: print "MOVE: < >  ROTATE: C X"
+1151 htab 12: vtab 24: print "MOVE: < >  ROTATE: C X"
 1152 htab 33: vtab 21: print "NEXT"
 1160 gosub 1700: REM NEXTBLOCK
 1161 REM check for collision. game over if block collides after spawning
 1162 gosub 1900
 1163 if col > 0 then goto 1400
-1164 HTAB 12: vtab 22: print "SCORE ";scr
+1164 HTAB 16: vtab 21: print "SCORE ";scr
 1170 gosub 1800: REM DRAW
 1171 for dt = 1 to 1
 1172     gosub 1600
@@ -218,8 +218,8 @@ NEW
 
 1400 REM GAME OVER
 1401 home
-1402 htab 12: vtab 22: print "GAME OVER"
-1403 htab  8: vtab 23: print "FINAL SCORE: ";scr
+1402 htab 16: vtab 21: print "GAME OVER"
+1403 htab 12: vtab 23: print "FINAL SCORE: ";scr
 1404 gosub 1610
 1499 end
 
