@@ -287,7 +287,7 @@ NEW
 2017     REM shift higher rows down
 2018     for y1=y to 2 step -1
 2019         REM finish the loop when theres nothing more to clear
-2020         if fill(y1) = 0 then goto 2034
+2020         if fill(y1) = 0 then goto 2033
 2021         REM this will read from row 0 for the top grid row,
 2022         REM which is always 0
 2023         fill(y1) = fill(y1 - 1)
