@@ -37,9 +37,9 @@ NEW
 
  600 REM FUNCTIONS
  601 REM compute grid x coordinate for column c
- 602 def fn gx(c) = 4 + c
+ 602 def fn gx(c) = 14 + c
  603 REM compute grid y coordinate for row r
- 604 def fn gy(r) = 4 + r
+ 604 def fn gy(r) = 10 + r
 
  700 REM DATA
  701 REM mapping for clockwise rotation
@@ -179,10 +179,17 @@ NEW
 1104 vlin fn gy(0), fn gy(21) at fn gx(0)
 1105 vlin fn gy(0), fn gy(21) at fn gx(11)
 
+1110 REM DRAW PREVIEW FRAME
+1111 color = 10
+1112 hlin fn gx(17), fn gx(23) at fn gy(16)
+1113 hlin fn gx(17), fn gx(23) at fn gy(23)
+1114 vlin fn gy(16), fn gy(23) at fn gx(17)
+1115 vlin fn gy(16), fn gy(23) at fn gx(23)
+
 
 1150 REM main loop
 1151 htab 2: vtab 24: print "MOVE: < >  ROTATE: C X"
-1152 htab 20: vtab 21: print "NEXT"
+1152 htab 33: vtab 21: print "NEXT"
 1160 gosub 1700: REM NEXTBLOCK
 1161 REM check for collision. game over if block collides after spawning
 1162 gosub 1900
@@ -243,8 +250,8 @@ NEW
 1701 REM picks the next block at random and update the preview
 1702 REM the very first time this function is called, no nblock is defined yet.
 1703 if nblock = 0 then nblock = int(rnd(4) * 7 + 1)
-1704 REM the preview is drawn at:
-1705 bx = 16: by = 22
+1704 REM the preview is drawn at: (relative to grid)
+1705 bx = 20: by = 20
 1706 REM set the current block to the next block
 1707 block = nblock
 1708 REM remove the preview of the next block
