@@ -170,17 +170,24 @@ NEW
 1161 gosub 1800: REM DRAW
 1162 for dt = 1 to 1
 1163     gosub 1600: print "key: ";key
-1164     if key = 136 then print "LEFT": gosub 2100
-1165     if key = 149 then print "RIGHT": gosub 2120
-1166     if key = 195 then print "CW": gosub 2140
-1167     if key = 216 then print "CCW": gosub 2160
+1164     if key = 136 then gosub 2100
+1165     if key = 149 then gosub 2120
+1166     if key = 195 then gosub 2140
+1167     if key = 216 then gosub 2160
 1168 next
 1169 gosub 1805: REM CLEAR
 1170 by = by + 1
 1171 gosub 1900: REM CHECK COLLISION
-1172 if col > 0 then by = by - 1: gosub 1800: gosub 2000: goto 1160
-1173 if by = 20 then stop: REM this shouldn't happen
-1174 goto 1161
+1172 if col = 0 then goto 1161: REM no collision, continue with next loop
+1173 REM else: revert downwards movement
+1174 by = by - 1
+1175 REM redraw the block in the old position
+1176 gosub 1800
+1177 REM place the block
+1178 gosub 2000
+1179 REM pick the next block
+1180 goto 1160
+
 
 1499 end
 
